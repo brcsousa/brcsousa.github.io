@@ -3,179 +3,463 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minha Página Inicial</title>
+<title>Início</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #F5F0E8;
+    --ink: #1A1714;
+    --muted: #7A756E;
+    --rule: #D4CDBF;
+    --acc1: #C84B2F;
+    --acc2: #2B5C8A;
+    --acc3: #3A7D44;
+    --acc4: #8A4B2B;
+    --acc5: #5C3A8A;
+    --card: #FFFDF9;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
   body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
     min-height: 100vh;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    padding: 0;
+    /* Subtle paper texture via repeating-linear-gradient */
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(0,0,0,0.03) 31px, rgba(0,0,0,0.03) 32px);
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    border-bottom: 3px double var(--ink);
+    padding: 28px 32px 18px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .masthead-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    line-height: 1;
+    letter-spacing: -1px;
+    font-weight: 700;
+  }
+
+  .masthead-title span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 400;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .masthead-meta {
+    text-align: right;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+
+  /* ── LAYOUT ── */
+  .page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 40px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .section-accent {
+    width: 28px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── GRID ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 8px;
+  }
+
+  /* ── BOOKMARK CARD ── */
+  .bk {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 11px 13px;
+    text-decoration: none;
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bk::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--stripe, var(--acc1));
+    opacity: 0;
+    transition: opacity 0.18s;
+  }
+
+  .bk:hover {
+    border-color: #b0a898;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+  }
+
+  .bk:hover::before { opacity: 1; }
+
+  .bk-ico {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* CSS-only favicon fallback using the domain initial via content */
+  .bk-fallback {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
     color: #fff;
-    padding: 20px;
+    background: var(--stripe, var(--acc1));
   }
-  .clock { text-align: center; padding: 30px 20px 10px; }
-  .clock-time {
-    font-size: clamp(2.5rem, 10vw, 4rem);
-    font-weight: 200; letter-spacing: 4px;
-    background: linear-gradient(90deg, #60a5fa, #a78bfa);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+
+  .bk-name {
+    font-size: 0.82rem;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.01em;
   }
-  .clock-date { color: #64748b; font-size: 0.85rem; margin-top: 4px; }
-  header { text-align: center; padding: 10px 20px 24px; }
-  header h1 {
-    font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: 700;
-    background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+
+  /* ── COLOUR VARIANTS PER SECTION ── */
+  .s-trabalho  .bk { --stripe: var(--acc2); }
+  .s-social    .bk { --stripe: var(--acc1); }
+  .s-noticias  .bk { --stripe: var(--acc3); }
+  .s-entret    .bk { --stripe: var(--acc4); }
+  .s-tools     .bk { --stripe: var(--acc5); }
+
+  .s-trabalho  .section-accent { background: var(--acc2); }
+  .s-social    .section-accent { background: var(--acc1); }
+  .s-noticias  .section-accent { background: var(--acc3); }
+  .s-entret    .section-accent { background: var(--acc4); }
+  .s-tools     .section-accent { background: var(--acc5); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 0 0 40px;
   }
-  .search-container { max-width: 600px; margin: 0 auto 36px; padding: 0 10px; }
-  .search-box {
-    display: flex; align-items: center;
-    background: rgba(255,255,255,0.1); backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.2); border-radius: 50px;
-    padding: 12px 20px; gap: 12px; transition: all 0.3s;
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 3px double var(--ink);
+    padding: 16px 32px;
+    text-align: center;
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
   }
-  .search-box:focus-within {
-    background: rgba(255,255,255,0.18); border-color: #a78bfa;
-    box-shadow: 0 0 0 3px rgba(167,139,250,0.25);
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 520px) {
+    .masthead { padding: 18px 16px 14px; }
+    .page { padding: 20px 14px 48px; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .masthead-meta { display: none; }
   }
-  .search-box input { flex: 1; background: none; border: none; outline: none; color: #fff; font-size: 1rem; }
-  .search-box input::placeholder { color: #94a3b8; }
-  .search-btn {
-    background: linear-gradient(135deg, #a78bfa, #60a5fa);
-    border: none; border-radius: 50px; padding: 8px 20px;
-    color: #fff; font-weight: 600; cursor: pointer; font-size: 0.9rem;
-    transition: opacity 0.2s; white-space: nowrap;
+
+  /* ── ANIMATION: staggered entry ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
-  .search-btn:hover { opacity: 0.85; }
-  .main { max-width: 920px; margin: 0 auto; }
-  .section { margin-bottom: 28px; }
-  .section-title {
-    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 2px;
-    color: #94a3b8; margin-bottom: 10px; padding-left: 4px;
-    display: flex; align-items: center; gap: 8px;
+
+  .section {
+    animation: fadeUp 0.5s ease both;
   }
-  .section-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.1); }
-  .bookmarks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 9px; }
-  .bookmark {
-    display: flex; align-items: center; gap: 10px;
-    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 14px; padding: 11px 13px; text-decoration: none;
-    color: #e2e8f0; transition: all 0.2s;
-  }
-  .bookmark:hover {
-    background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3);
-    transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); color: #fff;
-  }
-  .favicon { width: 22px; height: 22px; border-radius: 5px; flex-shrink: 0; object-fit: contain; }
-  .favicon-fb {
-    width: 22px; height: 22px; border-radius: 5px; flex-shrink: 0;
-    display: none; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; color: #fff;
-  }
-  .bookmark-name { font-size: 0.85rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .cat-trabalho .bookmark { border-left: 3px solid #60a5fa; }
-  .cat-social .bookmark { border-left: 3px solid #f472b6; }
-  .cat-noticias .bookmark { border-left: 3px solid #34d399; }
-  .cat-entret .bookmark { border-left: 3px solid #fbbf24; }
-  .cat-tools .bookmark { border-left: 3px solid #a78bfa; }
-  @media (max-width: 480px) {
-    body { padding: 12px; }
-    .bookmarks-grid { grid-template-columns: repeat(2, 1fr); }
-    .bookmark { padding: 10px 11px; }
-    .bookmark-name { font-size: 0.78rem; }
-  }
+  .section:nth-child(1) { animation-delay: 0.05s; }
+  .section:nth-child(2) { animation-delay: 0.12s; }
+  .section:nth-child(3) { animation-delay: 0.19s; }
+  .section:nth-child(4) { animation-delay: 0.26s; }
+  .section:nth-child(5) { animation-delay: 0.33s; }
 </style>
 </head>
 <body>
-<div class="clock">
-  <div class="clock-time" id="clock">00:00</div>
-  <div class="clock-date" id="date"></div>
-</div>
-<header><h1>✦ Minha Página Inicial</h1></header>
-<div class="search-container">
-  <div class="search-box">
-    <svg width="18" height="18" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24">
-      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-    </svg>
-    <input type="text" id="q" placeholder="Pesquisar no Google..." autocomplete="off"/>
-    <button class="search-btn" onclick="doSearch()">Pesquisar</button>
+
+<header class="masthead">
+  <div class="masthead-title">
+    <span>Página Inicial</span>
+    Bookmarks
   </div>
-</div>
-<div class="main" id="main"></div>
-<script>
-const cats = [
-  {name:"💼 Trabalho",cls:"cat-trabalho",sites:[
-    {name:"Gmail",url:"https://mail.google.com",c:"#EA4335"},
-    {name:"Drive",url:"https://drive.google.com",c:"#34A853"},
-    {name:"Docs",url:"https://docs.google.com",c:"#4285F4"},
-    {name:"Notion",url:"https://notion.so",c:"#000"},
-    {name:"Slack",url:"https://slack.com",c:"#4A154B"},
-    {name:"Trello",url:"https://trello.com",c:"#0052CC"},
-  ]},
-  {name:"📱 Redes Sociais",cls:"cat-social",sites:[
-    {name:"YouTube",url:"https://youtube.com",c:"#FF0000"},
-    {name:"Instagram",url:"https://instagram.com",c:"#E1306C"},
-    {name:"X / Twitter",url:"https://x.com",c:"#1DA1F2"},
-    {name:"LinkedIn",url:"https://linkedin.com",c:"#0A66C2"},
-    {name:"Reddit",url:"https://reddit.com",c:"#FF4500"},
-    {name:"TikTok",url:"https://tiktok.com",c:"#010101"},
-  ]},
-  {name:"📰 Notícias",cls:"cat-noticias",sites:[
-    {name:"Público",url:"https://publico.pt",c:"#d32f2f"},
-    {name:"Observador",url:"https://observador.pt",c:"#1565c0"},
-    {name:"Jornal Negócios",url:"https://jornaldenegocios.pt",c:"#e65100"},
-    {name:"BBC News",url:"https://bbc.com/news",c:"#BB1919"},
-    {name:"CNN",url:"https://cnn.com",c:"#cc0000"},
-  ]},
-  {name:"🎬 Entretenimento",cls:"cat-entret",sites:[
-    {name:"Netflix",url:"https://netflix.com",c:"#E50914"},
-    {name:"Spotify",url:"https://spotify.com",c:"#1DB954"},
-    {name:"Prime Video",url:"https://primevideo.com",c:"#00A8E1"},
-    {name:"Disney+",url:"https://disneyplus.com",c:"#113CCF"},
-    {name:"Twitch",url:"https://twitch.tv",c:"#9146FF"},
-  ]},
-  {name:"🛠️ Ferramentas",cls:"cat-tools",sites:[
-    {name:"Claude",url:"https://claude.ai",c:"#cc785c"},
-    {name:"ChatGPT",url:"https://chat.openai.com",c:"#10a37f"},
-    {name:"GitHub",url:"https://github.com",c:"#24292e"},
-    {name:"Figma",url:"https://figma.com",c:"#F24E1E"},
-    {name:"Canva",url:"https://canva.com",c:"#00C4CC"},
-    {name:"Tradutor",url:"https://translate.google.com",c:"#4285F4"},
-  ]},
-];
-function fav(url){ return `https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=32`; }
-document.getElementById('main').innerHTML = cats.map(cat=>`
-  <div class="section ${cat.cls}">
-    <div class="section-title">${cat.name}</div>
-    <div class="bookmarks-grid">
-      ${cat.sites.map(s=>`
-        <a class="bookmark" href="${s.url}" target="_blank" rel="noopener">
-          <img class="favicon" src="${fav(s.url)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" loading="lazy" alt="">
-          <span class="favicon-fb" style="background:${s.c}">${s.name[0]}</span>
-          <span class="bookmark-name">${s.name}</span>
-        </a>`).join('')}
+  <div class="masthead-meta">
+    Favoritos pessoais<br>
+    Abrir em nova janela
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- TRABALHO -->
+  <section class="section s-trabalho">
+    <div class="section-header">
+      <div class="section-accent"></div>
+      <span class="section-label">Trabalho</span>
     </div>
-  </div>`).join('');
-function doSearch(){ const q=document.getElementById('q').value.trim(); if(q) window.open('https://www.google.com/search?q='+encodeURIComponent(q),'_blank'); }
-document.getElementById('q').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
-function tick(){
-  const n=new Date();
-  document.getElementById('clock').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
-  const d=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-  const m=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  document.getElementById('date').textContent=`${d[n.getDay()]}, ${n.getDate()} de ${m[n.getMonth()]} de ${n.getFullYear()}`;
-}
-tick(); setInterval(tick,10000);
-</script>
+    <div class="grid">
+      <a class="bk" href="https://mail.google.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=mail.google.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Gmail</span>
+      </a>
+      <a class="bk" href="https://drive.google.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=drive.google.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Google Drive</span>
+      </a>
+      <a class="bk" href="https://docs.google.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=docs.google.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Google Docs</span>
+      </a>
+      <a class="bk" href="https://calendar.google.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=calendar.google.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Google Calendar</span>
+      </a>
+      <a class="bk" href="https://notion.so" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=notion.so&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Notion</span>
+      </a>
+      <a class="bk" href="https://slack.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=slack.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Slack</span>
+      </a>
+      <a class="bk" href="https://trello.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=trello.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Trello</span>
+      </a>
+      <a class="bk" href="https://zoom.us" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=zoom.us&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Zoom</span>
+      </a>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- REDES SOCIAIS -->
+  <section class="section s-social">
+    <div class="section-header">
+      <div class="section-accent"></div>
+      <span class="section-label">Redes Sociais</span>
+    </div>
+    <div class="grid">
+      <a class="bk" href="https://youtube.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=youtube.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">YouTube</span>
+      </a>
+      <a class="bk" href="https://instagram.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=instagram.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Instagram</span>
+      </a>
+      <a class="bk" href="https://x.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=x.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">X / Twitter</span>
+      </a>
+      <a class="bk" href="https://linkedin.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=linkedin.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">LinkedIn</span>
+      </a>
+      <a class="bk" href="https://reddit.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=reddit.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Reddit</span>
+      </a>
+      <a class="bk" href="https://tiktok.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=tiktok.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">TikTok</span>
+      </a>
+      <a class="bk" href="https://facebook.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=facebook.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Facebook</span>
+      </a>
+      <a class="bk" href="https://pinterest.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=pinterest.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Pinterest</span>
+      </a>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- NOTÍCIAS -->
+  <section class="section s-noticias">
+    <div class="section-header">
+      <div class="section-accent"></div>
+      <span class="section-label">Notícias</span>
+    </div>
+    <div class="grid">
+      <a class="bk" href="https://publico.pt" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=publico.pt&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Público</span>
+      </a>
+      <a class="bk" href="https://observador.pt" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=observador.pt&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Observador</span>
+      </a>
+      <a class="bk" href="https://jornaldenegocios.pt" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=jornaldenegocios.pt&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Jornal Negócios</span>
+      </a>
+      <a class="bk" href="https://bbc.com/news" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=bbc.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">BBC News</span>
+      </a>
+      <a class="bk" href="https://dn.pt" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=dn.pt&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Diário de Notícias</span>
+      </a>
+      <a class="bk" href="https://cnn.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=cnn.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">CNN</span>
+      </a>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ENTRETENIMENTO -->
+  <section class="section s-entret">
+    <div class="section-header">
+      <div class="section-accent"></div>
+      <span class="section-label">Entretenimento</span>
+    </div>
+    <div class="grid">
+      <a class="bk" href="https://netflix.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=netflix.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Netflix</span>
+      </a>
+      <a class="bk" href="https://spotify.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=spotify.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Spotify</span>
+      </a>
+      <a class="bk" href="https://primevideo.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=primevideo.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Prime Video</span>
+      </a>
+      <a class="bk" href="https://disneyplus.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=disneyplus.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Disney+</span>
+      </a>
+      <a class="bk" href="https://twitch.tv" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=twitch.tv&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Twitch</span>
+      </a>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- FERRAMENTAS -->
+  <section class="section s-tools">
+    <div class="section-header">
+      <div class="section-accent"></div>
+      <span class="section-label">Ferramentas</span>
+    </div>
+    <div class="grid">
+      <a class="bk" href="https://claude.ai" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=claude.ai&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Claude</span>
+      </a>
+      <a class="bk" href="https://chat.openai.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=chat.openai.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">ChatGPT</span>
+      </a>
+      <a class="bk" href="https://github.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=github.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">GitHub</span>
+      </a>
+      <a class="bk" href="https://figma.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=figma.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Figma</span>
+      </a>
+      <a class="bk" href="https://canva.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=canva.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Canva</span>
+      </a>
+      <a class="bk" href="https://translate.google.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=translate.google.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Tradutor</span>
+      </a>
+      <a class="bk" href="https://weather.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=weather.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Weather</span>
+      </a>
+      <a class="bk" href="https://maps.google.com" target="_blank" rel="noopener">
+        <img class="bk-ico" src="https://www.google.com/s2/favicons?domain=maps.google.com&sz=32" alt="" loading="lazy">
+        <span class="bk-name">Google Maps</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  &mdash; Bookmarks Pessoais &mdash;
+</footer>
+
 </body>
 </html>
-Aqui está a tua página inicial! Podes copiar o código acima e guardar como bookmarks.html. Funcionalidades incluídas:
-🕐 Relógio ao vivo — hora e data em português, atualizado automaticamente
-🔍 Pesquisa Google — campo de pesquisa com atalho pela tecla Enter, abre numa nova tab
-📌 5 categorias de bookmarks cada uma com cor distinta na borda esquerda:
-💼 Trabalho (Gmail, Drive, Notion, Slack…)
-📱 Redes Sociais (YouTube, Instagram, X, LinkedIn…)
-📰 Notícias (Público, Observador, BBC, CNN…)
-🎬 Entretenimento (Netflix, Spotify, Disney+…)
-🛠️ Ferramentas (Claude, ChatGPT, GitHub, Figma…)
-📱 Totalmente responsivo — em telemóvel mostra 2 colunas, em desktop preenche automaticamente. Para personalizar, basta editar o array cats no JavaScript com os teus sites favoritos.
